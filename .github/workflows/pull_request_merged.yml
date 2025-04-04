@@ -26,6 +26,8 @@ jobs:
             **Pull Request:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
             **Author:** ${{ github.event.pull_request.user.login }}
             **Merged By:** ${{ github.event.pull_request.merged_by.login }}
+          pull_request_url: ${{ github.event.pull_request.html_url }}
+          
 
   notify-failure:
     if: ${{ github.event.pull_request.merged != true }}
@@ -46,3 +48,5 @@ jobs:
             **Pull Request:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
             **Author:** ${{ github.event.pull_request.user.login }}
             **Status:** Merge Failed
+            **Reason:** ${{ github.event.pull_request.mergeable_state }}
+          pull_request_url: ${{ github.event.pull_request.html_url }}
