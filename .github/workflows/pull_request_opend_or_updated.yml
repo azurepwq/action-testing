@@ -9,6 +9,7 @@ on:
 jobs:
   notify-feishu:
     runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
 
     steps:
       - name: Set ACTION environment variable
