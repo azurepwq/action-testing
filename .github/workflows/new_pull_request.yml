@@ -17,8 +17,6 @@ jobs:
 
     steps:
       - name: Send notification to Feishu
-        env:
-          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
         run: |
           curl -X POST -H "Content-Type: application/json" \
           -d '{
@@ -59,4 +57,3 @@ jobs:
                     ]
                 }
               }' \
-          $FEISHU_WEBHOOK_URL
