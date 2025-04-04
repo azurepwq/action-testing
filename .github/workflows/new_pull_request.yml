@@ -4,6 +4,13 @@ on:
   pull_request:
     types: [opened]
 
+  workflow_dispatch:
+    inputs:
+      message:
+        description: 'Message to send'
+        required: true
+        default: 'A new pull request has been created.'
+
 jobs:
   notify-feishu:
     runs-on: ubuntu-latest
