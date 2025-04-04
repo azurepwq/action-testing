@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Notify Feishu on Pull Request Opened or Updated
-        uses: ./actions/feishu-notify
+        uses: ./actions/feishu-notify/action.yml
         with:
           webhook-url: ${{ secrets.FEISHU_WEBHOOK_URL }}
           title: ${{ github.event.action == 'opened' && 'New Pull Request' || 'Pull Request Updated' }}
