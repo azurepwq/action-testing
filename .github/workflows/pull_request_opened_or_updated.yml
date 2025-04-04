@@ -14,24 +14,16 @@ jobs:
       - name: Checkout Repository 
         uses: actions/checkout@v4
 
-      - name: Debug Dynamic Variables
-        run: |
-          echo "Repository: ${{ github.repository }}"
-          echo "Pull Request Title: ${{ github.event.pull_request.title }}"
-          echo "Pull Request URL: ${{ github.event.pull_request.html_url }}"
-          echo "Author: ${{ github.event.pull_request.user.login }}"
-          echo "Description: ${{ github.event.pull_request.body || 'No description provided.' }}"
-
       - name: Notify Feishu on Pull Request Opened or Updated
         uses: ./.github/actions/feishu-notify
         with:
           webhook_url: ${{ secrets.FEISHU_BOT_WEBHOOK_URL }}
           title: ${{ github.event.action == 'opened' && 'New Pull Request' || 'Pull Request Updated' }}
           template: "blue"
+          pull_request_url: ${{ github.event.pull_request.html_url }}
           # The '|' symbol is used to define a multi-line string in YAML.
           content: |
             **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})  
             **Pull Request:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})  
             **Author:** ${{ github.event.pull_request.user.login }}  
             **Description:** ${{ github.event.pull_request.body || 'No description provided.' }}"
-          pull_request_url: ${{ github.event.pull_request.html_url }}
