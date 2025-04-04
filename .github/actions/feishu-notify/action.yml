@@ -13,6 +13,9 @@ inputs:
   content:
     description: "Notification content in markdown format"
     required: true
+  pull_request_url:
+    description: "URL of the pull request"
+    required: true
 runs:
   using: "composite"
   steps:
