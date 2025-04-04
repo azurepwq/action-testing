@@ -14,17 +14,21 @@ jobs:
       - name: Checkout Repository 
         uses: actions/checkout@v4
 
+      - name: Build Feishu Content
+        id: build_content
+        run: |
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "**Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})" >> $GITHUB_OUTPUT
+          echo "**PullRequest:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})" >> $GITHUB_OUTPUT
+          echo "**Author:** ${{ github.event.pull_request.user.login }}" >> $GITHUB_OUTPUT
+          echo "**Description:** ${{ github.event.pull_request.body || 'No description provided.' }}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Notify Feishu on Pull Request Opened or Updated
-        env:
-          FEISHU_CONTENT: |
-            **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})
-            **PullRequest:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})  
-            **Author:** ${{ github.event.pull_request.user.login }}  
-            **Description:** ${{ github.event.pull_request.body || 'No description provided.' }}" #
         uses: ./.github/actions/feishu-notify
         with:
           webhook_url: ${{ secrets.FEISHU_BOT_WEBHOOK_URL }}
           title: ${{ github.event.action == 'opened' && 'New Pull Request' || 'Pull Request Updated' }}
           template: "blue"
           pull_request_url: ${{ github.event.pull_request.html_url }}
-          content: ${{ env.FEISHU_CONTENT }}
+          content: ${{ steps.build_content.outputs.content }}
