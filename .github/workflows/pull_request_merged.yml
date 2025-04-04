@@ -6,18 +6,13 @@ on:
       - main
     types: [closed]
 
-  workflow_run:
-    workflows: ["Notify Feishu on Pull Request Merged"]
-    types:
-      - completed
-
 jobs:
   notify-feishu:
     if: ${{ github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Notify Feishu on Pull Request Merged
@@ -26,29 +21,28 @@ jobs:
           webhook_url: ${{ secrets.FEISHU_WEBHOOK_URL }}
           title: "Pull Request Merged"
           template: "green"
-          repository: ${{ github.repository }}
-          pull_request_number: ${{ github.event.pull_request.number }}
-          pull_request_title: ${{ github.event.pull_request.title }}
-          pull_request_url: ${{ github.event.pull_request.html_url }}
-          author: ${{ github.event.pull_request.user.login }}
-          merged_by: ${{ github.event.pull_request.merged_by.login }}
+          content: |
+            **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})
+            **Pull Request:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
+            **Author:** ${{ github.event.pull_request.user.login }}
+            **Merged By:** ${{ github.event.pull_request.merged_by.login }}
 
   notify-failure:
-    if: ${{ failure() }}
+    if: ${{ github.event.pull_request.merged != true }}
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Notify Feishu on CI Failure
+      - name: Notify Feishu on Pull Request Merge Failed
         uses: ./.github/actions/feishu-notify
         with:
           webhook_url: ${{ secrets.FEISHU_WEBHOOK_URL }}
-          title: "CI Failure"
+          title: "Pull Request Merge Failed"
           template: "red"
           content: |
             **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})
-            **Workflow:** [${{ github.workflow }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            **Status:** Failed
-            **Triggered By:** ${{ github.actor }}
+            **Pull Request:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
+            **Author:** ${{ github.event.pull_request.user.login }}
+            **Status:** Merge Failed
