@@ -18,7 +18,7 @@ jobs:
       - name: Notify Feishu on Pull Request Merged
         uses: ./.github/actions/feishu-notify
         with:
-          webhook_url: ${{ secrets.FEISHU_WEBHOOK_URL }}
+          webhook_url: ${{ secrets.FEISHU_BOT_WEBHOOK_URL }}
           title: "Pull Request Merged"
           template: "green"
           content: |
@@ -38,7 +38,7 @@ jobs:
       - name: Notify Feishu on Pull Request Merge Failed
         uses: ./.github/actions/feishu-notify
         with:
-          webhook_url: ${{ secrets.FEISHU_WEBHOOK_URL }}
+          webhook_url: ${{ secrets.FEISHU_BOT_WEBHOOK_URL }}
           title: "Pull Request Merge Failed"
           template: "red"
           content: |
