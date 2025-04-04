@@ -18,8 +18,10 @@ runs:
   steps:
     - run: |
         curl -X POST -H "Content-Type: application/json" \
-        -d '{
-          "title": "${{ inputs.title }}",
-          "text": "${{ inputs.template }}\n\n${{ inputs.content }}"
-        }' ${{ inputs.webhook_url }}
+        -d "$(jq -n --arg title "${{ inputs.title }}" \
+                      --arg text "${{ inputs.template }}\n\n${{ inputs.content }}" \
+                      '{title: $title, text: $text}')" \
+        "${{ inputs.webhook_url }}"
       shell: bash
+      env:
+        PATH: $PATH:/usr/bin
