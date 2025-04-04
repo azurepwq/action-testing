@@ -44,5 +44,4 @@ runs:
                       }
                   ]
               }
-            }' \
-        ${{ inputs.webhook_url }}
+            }'
