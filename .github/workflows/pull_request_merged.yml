@@ -17,6 +17,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Notify Feishu on Pull Request Merged
         uses: ./actions/feishu-notify.yml
         with:
@@ -35,6 +38,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Notify Feishu on CI Failure
         uses: ./actions/feishu-notify.yml
         with:
