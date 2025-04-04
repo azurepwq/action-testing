@@ -21,4 +21,4 @@ jobs:
           title: ${{ github.event.action == 'opened' && 'New Pull Request' || 'Pull Request Updated' }}
           template: "blue"
           pull_request_url: ${{ github.event.pull_request.html_url }}
-          content: "**Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }}) **PullRequest:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }}) **Author:** ${{ github.event.pull_request.user.login }} **Description:** ${{ github.event.pull_request.body || 'No description provided.' }} "
+          content: "**Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})\\n **PullRequest:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }}) **Author:** ${{ github.event.pull_request.user.login }} **Description:** ${{ github.event.pull_request.body || 'No description provided.' }} "
