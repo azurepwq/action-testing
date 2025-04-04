@@ -18,7 +18,7 @@ jobs:
         uses: ./.github/actions/feishu-notify
         with:
           webhook_url: ${{ secrets.FEISHU_BOT_WEBHOOK_URL }}
-          title: ${{ github.event.action == 'opened' && '🚀 New Pull Request Created' || '🔄 Pull Request Updated' }}
+          title: ${{ github.event.action == 'opened' && '💡 Pull Request Created' || '🔄 Pull Request Updated' }}
           template: "blue"
           content: "**📦 Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})\\n**🧩 Pull Request:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})\\n**🐣 Author:** ${{ github.event.pull_request.user.login }}"
           pull_request_url: ${{ github.event.pull_request.html_url }}
