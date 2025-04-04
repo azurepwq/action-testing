@@ -1,0 +1,30 @@
+name: Notify Feishu on New Pull Request
+
+on:
+  pull_request:
+    types: [opened]
+
+  workflow_dispatch:
+    inputs:
+      message:
+        description: 'Message to send'
+        required: true
+        default: 'A new pull request has been created.'
+
+jobs:
+  notify-feishu:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send notification to Feishu
+        env:
+          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{
+                "msg_type": "text",
+                "content": {
+                    "text": "A new pull request has been created: ${{ github.event.pull_request.html_url }}"
+                }
+              }' \
+          $FEISHU_WEBHOOK_URL
