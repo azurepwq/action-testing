@@ -1,4 +1,4 @@
-name: Notify Feishu on New Pull Request
+name: Notify Feishu on New Pull Request or Update
 
 on:
   pull_request:
@@ -17,7 +17,7 @@ jobs:
       - name: Send notification to Feishu
         env:
           FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
-          ACION: ${{ github.event.action }}
+          ACTION: ${{ env.ACTION }}
         if: github.event.action == 'opened' || github.event.action == 'synchronize'
         run: |
           curl -X POST -H "Content-Type: application/json" \
@@ -30,7 +30,7 @@ jobs:
                     "header": {
                         "title": {
                             "tag": "plain_text",
-                            "content": "${{env.ACION}}"
+                            "content": "${{ env.ACTION }}"
                         },
                         "template": "blue"
                     },
@@ -58,5 +58,5 @@ jobs:
                         }
                     ]
                 }
-            }' \
+              }' \
           $FEISHU_WEBHOOK_URL
