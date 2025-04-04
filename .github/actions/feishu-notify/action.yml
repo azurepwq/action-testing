@@ -19,7 +19,7 @@ runs:
     - name: Send notification to Feishu
       shell: bash
       run: |
-        curl -X POST "${{ inputs.webhook_url }}" \
+        curl -X POST \
         -H "Content-Type: application/json" \
         -d '{
               "msg_type": "interactive",
@@ -44,4 +44,10 @@ runs:
                       }
                   ]
               }
-            }'
+            }' \
+        "${{ inputs.webhook_url }}"
+        echo "Notification sent to Feishu successfully."
+        echo "Notification content: ${{ inputs.content }}"
+        echo "Notification title: ${{ inputs.title }}"
+        echo "Notification template: ${{ inputs.template }}"
+        echo "Webhook URL: ${{ inputs.webhook_url }}"
