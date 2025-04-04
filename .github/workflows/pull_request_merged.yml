@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Notify Feishu on Pull Request Merged
-        uses: ./.github/actions/feishu-notify
+        uses: actions/feishu-notify
         with:
           webhook_url: ${{ secrets.FEISHU_WEBHOOK_URL }}
           title: "Pull Request Merged"
@@ -42,7 +42,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Notify Feishu on CI Failure
-        uses: ./.github/actions/feishu-notify
+        uses: actions/feishu-notify
         with:
           webhook_url: ${{ secrets.FEISHU_WEBHOOK_URL }}
           title: "CI Failure"
