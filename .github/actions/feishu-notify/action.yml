@@ -41,7 +41,7 @@ runs:
                           "tag": "div",
                           "text": {
                               "tag": "lark_md",
-                              "content": ${{ inputs.content }}
+                              "content": "${{ inputs.content }}"
                           }
                       },
                       {
