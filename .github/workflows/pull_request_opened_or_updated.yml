@@ -17,7 +17,7 @@ jobs:
       - name: Notify Feishu on Pull Request Opened or Updated
         uses: ./.github/actions/feishu-notify
         with:
-          webhook_url: ${{ secrets.FEISHU_BOT_WEBHOOK_URL }}
+          # webhook_url: ${{ secrets.FEISHU_BOT_WEBHOOK_URL }}
           title: ${{ github.event.action == 'opened' && 'New Pull Request' || 'Pull Request Updated' }}
           template: "blue"
           content: |

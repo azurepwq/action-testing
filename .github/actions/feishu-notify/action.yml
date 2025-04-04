@@ -1,9 +1,9 @@
 name: "Notify Feishu"
 description: "Send notifications to Feishu for various GitHub events"
 inputs:
-  webhook_url:
-    description: "Feishu bot webhook URL"
-    required: true
+  # webhook_url:
+  #   description: "Feishu bot webhook URL"
+  #   required: true
   title:
     description: "Notification title"
     required: true
@@ -45,20 +45,20 @@ runs:
                           }
                       },
                       {
-                            "tag": "action",
-                            "actions": [
-                                {
-                                    "tag": "button",
-                                    "text": {
-                                        "tag": "plain_text",
-                                        "content": "View Pull Request"
-                                    },
-                                    "url": "${{ inputs.pull_request_url }}",
-                                    "type": "primary"
-                                }
-                            ]
-                        }
+                          "tag": "action",
+                          "actions": [
+                              {
+                                  "tag": "button",
+                                  "text": {
+                                      "tag": "plain_text",
+                                      "content": "View Pull Request"
+                                  },
+                                  "url": "${{ inputs.pull_request_url }}",
+                                  "type": "primary"
+                              }
+                          ]
+                      }
                   ]
               }
           }' \
-        ${{ inputs.webhook_url }}
+        ${{ secrets.FEISHU_WEBHOOK_URL.webhook_url }}
