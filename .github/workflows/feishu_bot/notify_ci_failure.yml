@@ -33,7 +33,7 @@ jobs:
                     "header": {
                         "title": {
                             "tag": "plain_text",
-                            "content": "Pull Request CI Failure Notification"
+                            "content": "Pull Request CI Failure"
                         },
                         "template": "red"
                     },
