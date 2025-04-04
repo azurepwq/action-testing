@@ -20,9 +20,10 @@ jobs:
           webhook_url: ${{ secrets.FEISHU_BOT_WEBHOOK_URL }}
           title: ${{ github.event.action == 'opened' && 'New Pull Request' || 'Pull Request Updated' }}
           template: "blue"
-          content: "test content"
-            # **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})
-            # **Pull Request:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
-            # **Author:** ${{ github.event.pull_request.user.login }}
-            # **Description:** ${{ github.event.pull_request.body || 'No description provided.' }}
+          # The '|' symbol is used to define a multi-line string in YAML.
+          content: |
+            **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})  
+            # **Pull Request:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})  
+            # **Author:** ${{ github.event.pull_request.user.login }}  
+            # **Description:** ${{ github.event.pull_request.body || 'No description provided.' }}  
           pull_request_url: ${{ github.event.pull_request.html_url }}
