@@ -61,4 +61,4 @@ runs:
                   ]
               }
           }' \
-        ${{ secrets.FEISHU_WEBHOOK_URL.webhook_url }}
+        ${{ secrets.FEISHU_BOT_WEBHOOK_URL}}
