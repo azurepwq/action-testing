@@ -1,0 +1,64 @@
+name: "Notify Feishu"
+description: "Send notifications to Feishu for various GitHub events"
+inputs:
+  webhook_url:
+    description: "Feishu bot webhook URL"
+    required: true
+  title:
+    description: "Notification title"
+    required: true
+  template:
+    description: "Notification template color (e.g., red, green, blue)"
+    required: true
+  content:
+    description: "Notification content in markdown format"
+    required: true
+  pull_request_url:
+    description: "URL of the pull request"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Send notification to Feishu
+      shell: bash
+      run: |
+        curl -X POST -H "Content-Type: application/json" \
+        -d '{
+              "msg_type": "interactive",
+              "card": {
+                  "config": {
+                      "wide_screen_mode": true
+                  },
+                  "header": {
+                      "title": {
+                          "tag": "plain_text",
+                          "content": "${{ inputs.title }}"
+                      },
+                      "template": "${{ inputs.template }}"
+                  },
+                  "elements": [
+                      {
+                          "tag": "div",
+                          "text": {
+                              "tag": "lark_md",
+                              "content": "${{ inputs.content }}"
+                          }
+                      },
+                      {
+                          "tag": "action",
+                          "actions": [
+                              {
+                                  "tag": "button",
+                                  "text": {
+                                      "tag": "plain_text",
+                                      "content": "View Pull Request"
+                                  },
+                                  "url": "${{ inputs.pull_request_url }}",
+                                  "type": "primary"
+                              }
+                          ]
+                      }
+                  ]
+              }
+          }' \
+        ${{ inputs.webhook_url }}

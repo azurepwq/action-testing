@@ -1,0 +1,44 @@
+name: Notify Feishu on Pull Request Merged
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+jobs:
+  notify-feishu:
+    if: ${{ github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Notify Feishu on Pull Request Merged
+        uses: ./.github/actions/feishu-notify
+        with:
+          webhook_url: ${{ secrets.FEISHU_BOT_WEBHOOK_URL }}
+          title: "Pull Request Merged"
+          template: "green"
+          pull_request_url: ${{ github.event.pull_request.html_url }}
+          content: "**Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})\\n**Pull Request:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})\\n**Author:** ${{ github.event.pull_request.user.login }}\\n**Merged By:** ${{ github.event.pull_request.merged_by.login }}\\n"
+          
+
+  notify-failure:
+    if: ${{ github.event.pull_request.merged != true }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Notify Feishu on Pull Request Merge Failed
+        uses: ./.github/actions/feishu-notify
+        with:
+          webhook_url: ${{ secrets.FEISHU_BOT_WEBHOOK_URL}}
+          title: "Pull Request Merge Failed"
+          template: "red"
+          pull_request_url: ${{ github.event.pull_request.html_url }}
+          content: |
+            "**Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})\\n**Pull Request:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})\\n**Author:** ${{ github.event.pull_request.user.login }}\\n**Status:** Merge Failed\\n**Reason:** ${{ github.event.pull_request.mergeable_state }}"
