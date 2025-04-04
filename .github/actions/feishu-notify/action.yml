@@ -1,47 +1,25 @@
-name: "Notify Feishu"
-description: "Send notifications to Feishu for various GitHub events"
+name: "Feishu Notify"
+description: "Send notifications to Feishu on pull request events"
 inputs:
   webhook_url:
-    description: "Feishu bot webhook URL"
+    description: "The Feishu webhook URL"
     required: true
   title:
-    description: "Notification title"
+    description: "The title of the notification"
     required: true
   template:
-    description: "Notification template color (e.g., red, green, blue)"
+    description: "The message template"
     required: true
   content:
-    description: "Notification content in markdown format"
-    required: true
+    description: "The content of the pull request body"
+    required: false
 runs:
   using: "composite"
   steps:
-    - name: Send notification to Feishu
-      run: |
+    - run: |
         curl -X POST -H "Content-Type: application/json" \
         -d '{
-              "msg_type": "interactive",
-              "card": {
-                  "config": {
-                      "wide_screen_mode": true
-                  },
-                  "header": {
-                      "title": {
-                          "tag": "plain_text",
-                          "content": "${{ inputs.title }}"
-                      },
-                      "template": "${{ inputs.template }}"
-                  },
-                  "elements": [
-                      {
-                          "tag": "div",
-                          "text": {
-                              "tag": "lark_md",
-                              "content": "${{ inputs.content }}"
-                          }
-                      }
-                  ]
-              }
-            }' \
-        ${{ inputs.webhook_url }}
+          "title": "${{ inputs.title }}",
+          "text": "${{ inputs.template }}\n\n${{ inputs.content }}"
+        }' ${{ inputs.webhook_url }}
       shell: bash
