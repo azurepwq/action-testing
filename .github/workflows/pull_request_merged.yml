@@ -22,7 +22,7 @@ jobs:
           title: "✅ Pull Request Merged"
           template: "green"
           pull_request_url: ${{ github.event.pull_request.html_url }}
-          content: "**📦 Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})\\n**🧩 Pull Request:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})\\n🐣 **从分支:** ${{ github.head_ref }}\\n🌸 **合并到:** ${{ github.base_ref }}\\n**👀 Author:** ${{ github.event.pull_request.user.login }}\\n**🔀 Merged By:** ${{ github.event.pull_request.merged_by.login }}\\n"
+          content: "**📦 Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})\\n**🧩 Pull Request:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})\\n🌱 **Source:** ${{ github.head_ref }}\\n🌸 **Target:** ${{ github.base_ref }}\\n**🐣 Author:** ${{ github.event.pull_request.user.login }}\\n**🔀 Merged By:** ${{ github.event.pull_request.merged_by.login }}\\n"
           
 
   notify-failure:
