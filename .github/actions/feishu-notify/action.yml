@@ -1,9 +1,9 @@
 name: "Notify Feishu"
 description: "Send notifications to Feishu for various GitHub events"
 inputs:
-  # webhook_url:
-  #   description: "Feishu bot webhook URL"
-  #   required: true
+  webhook_url:
+    description: "Feishu bot webhook URL"
+    required: true
   title:
     description: "Notification title"
     required: true
@@ -61,4 +61,4 @@ runs:
                   ]
               }
           }' \
-        ${{ secrets.FEISHU_BOT_WEBHOOK_URL}}
+        ${{ inputs.webhook_url }}
