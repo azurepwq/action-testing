@@ -61,4 +61,4 @@ runs:
                   ]
               }
           }' \
-        $FEISHU_WEBHOOK_URL
+        ${{ inputs.webhook_url }}
