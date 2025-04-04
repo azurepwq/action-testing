@@ -19,10 +19,10 @@ jobs:
         uses: ./.github/actions/feishu-notify
         with:
           webhook_url: ${{ secrets.FEISHU_BOT_WEBHOOK_URL }}
-          title: "Pull Request Merged"
+          title: "✅ Pull Request Merged"
           template: "green"
           pull_request_url: ${{ github.event.pull_request.html_url }}
-          content: "**Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})\\n**Pull Request:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})\\n**Author:** ${{ github.event.pull_request.user.login }}\\n**Merged By:** ${{ github.event.pull_request.merged_by.login }}\\n"
+          content: "**📦 Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})\\n**🧩 Pull Request:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})\\n🐣 **从分支:** ${{ github.head_ref }}\\n🌸 **合并到:** ${{ github.base_ref }}\\n**👀 Author:** ${{ github.event.pull_request.user.login }}\\n**🔀 Merged By:** ${{ github.event.pull_request.merged_by.login }}\\n"
           
 
   notify-failure:
@@ -41,4 +41,4 @@ jobs:
           template: "red"
           pull_request_url: ${{ github.event.pull_request.html_url }}
           content: |
-            "**Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})\\n**Pull Request:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})\\n**Author:** ${{ github.event.pull_request.user.login }}\\n**Status:** Merge Failed\\n**Reason:** ${{ github.event.pull_request.mergeable_state }}"
+            "**📦 Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})\\n**🔀 Pull Request:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})\\n**👀 Author:** ${{ github.event.pull_request.user.login }}\\n**Status:** Merge Failed\\n**Reason:** ${{ github.event.pull_request.mergeable_state }}"
