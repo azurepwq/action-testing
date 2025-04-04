@@ -1,12 +1,17 @@
-name: Notify Feishu on Pull Request CI Failure
+name: Notify Feishu on Pull Request Events
 
 on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, closed]
+
   workflow_run:
     workflows: ["CI Workflow Name"] # Replace with the name of your CI workflow
     types:
       - completed
 
-  workflow_dispatch: # Allows manual triggering of the workflow
+  workflow_dispatch:
     inputs:
       reason:
         description: "Reason for manual test failure"
@@ -14,7 +19,68 @@ on:
         default: "No reason provided"
 
 jobs:
-  notify-feishu-on-failure:
+  notify-feishu:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set ACTION environment variable
+        run: |
+          if [[ "${{ github.event.action }}" == "opened" ]]; then
+            echo "ACTION=New Pull Request" >> $GITHUB_ENV
+          elif [[ "${{ github.event.action }}" == "synchronize" ]]; then
+            echo "ACTION=Pull Request Updated" >> $GITHUB_ENV
+          elif [[ "${{ github.event.action }}" == "closed" && "${{ github.event.pull_request.merged }}" == "true" ]]; then
+            echo "ACTION=Pull Request Merged" >> $GITHUB_ENV
+          fi
+
+      - name: Send notification to Feishu
+        env:
+          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+          ACTION: ${{ env.ACTION }}
+        if: github.event.action == 'opened' || github.event.action == 'synchronize' || (github.event.action == 'closed' && github.event.pull_request.merged == true)
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{
+                "msg_type": "interactive",
+                "card": {
+                    "config": {
+                        "wide_screen_mode": true
+                    },
+                    "header": {
+                        "title": {
+                            "tag": "plain_text",
+                            "content": "${{ env.ACTION }}"
+                        },
+                        "template": "${{ env.ACTION == 'Pull Request Merged' && 'green' || 'blue' }}"
+                    },
+                    "elements": [
+                        {
+                            "tag": "div",
+                            "text": {
+                                "tag": "lark_md",
+                                "content": "**Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})\n**Pull Request:** [#${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})\n**Author:** ${{ github.event.pull_request.user.login }}\n${{ env.ACTION == 'Pull Request Merged' && '**Merged By:** ${{ github.event.pull_request.merged_by.login }}' || '' }}\n\n${{ github.event.pull_request.body }}"
+                            }
+                        },
+                        {
+                            "tag": "action",
+                            "actions": [
+                                {
+                                    "tag": "button",
+                                    "text": {
+                                        "tag": "plain_text",
+                                        "content": "View Pull Request"
+                                    },
+                                    "url": "${{ github.event.pull_request.html_url }}",
+                                    "type": "primary"
+                                }
+                            ]
+                        }
+                    ]
+                }
+              }' \
+          $FEISHU_WEBHOOK_URL
+
+  notify-feishu-on-ci-failure:
     if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure' }}
     runs-on: ubuntu-latest
 
