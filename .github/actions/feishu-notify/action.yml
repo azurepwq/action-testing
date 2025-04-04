@@ -19,7 +19,8 @@ runs:
     - name: Send notification to Feishu
       shell: bash
       run: |
-        curl -X POST -H "Content-Type: application/json" \
+        curl -X POST "${{ secrets.FEISHU_WEBHOOK_URL }}" \
+        -H "Content-Type: application/json" \
         -d '{
               "msg_type": "interactive",
               "card": {
