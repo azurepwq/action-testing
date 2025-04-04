@@ -17,6 +17,7 @@ runs:
   using: "composite"
   steps:
     - name: Send notification to Feishu
+      shell: bash
       run: |
         curl -X POST -H "Content-Type: application/json" \
         -d '{
