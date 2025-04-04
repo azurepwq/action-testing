@@ -1,0 +1,101 @@
+name: Notify Feishu on Pull Request CI Failure
+
+on:
+  workflow_run:
+    workflows: ["CI Workflow Name"] # Replace with the name of your CI workflow
+    types:
+      - completed
+
+  workflow_dispatch: # Allows manual triggering of the workflow
+    inputs:
+      reason:
+        description: "Reason for manual test failure"
+        required: true
+        default: "No reason provided"
+
+jobs:
+  notify-feishu-on-failure:
+    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send notification to Feishu for CI failure
+        env:
+          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{
+                "msg_type": "interactive",
+                "card": {
+                    "config": {
+                        "wide_screen_mode": true
+                    },
+                    "header": {
+                        "title": {
+                            "tag": "plain_text",
+                            "content": "Pull Request CI Failure"
+                        },
+                        "template": "red"
+                    },
+                    "elements": [
+                        {
+                            "tag": "div",
+                            "text": {
+                                "tag": "lark_md",
+                                "content": "**Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})\n**Pull Request:** [#${{ github.event.workflow_run.pull_requests[0].number }} - ${{ github.event.workflow_run.pull_requests[0].title }}](${{ github.event.workflow_run.pull_requests[0].html_url }})\n**Author:** ${{ github.event.workflow_run.actor.login }}\n**Workflow:** [${{ github.event.workflow_run.name }}](${{ github.event.workflow_run.html_url }})\n**Status:** Failed"
+                            }
+                        },
+                        {
+                            "tag": "action",
+                            "actions": [
+                                {
+                                    "tag": "button",
+                                    "text": {
+                                        "tag": "plain_text",
+                                        "content": "View Workflow Run"
+                                    },
+                                    "url": "${{ github.event.workflow_run.html_url }}",
+                                    "type": "primary"
+                                }
+                            ]
+                        }
+                    ]
+                }
+              }' \
+          $FEISHU_WEBHOOK_URL
+
+  notify-feishu-manual-failure:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send notification to Feishu for manual test failure
+        env:
+          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{
+                "msg_type": "interactive",
+                "card": {
+                    "config": {
+                        "wide_screen_mode": true
+                    },
+                    "header": {
+                        "title": {
+                            "tag": "plain_text",
+                            "content": "Manual Test Failure Notification"
+                        },
+                        "template": "red"
+                    },
+                    "elements": [
+                        {
+                            "tag": "div",
+                            "text": {
+                                "tag": "lark_md",
+                                "content": "**Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})\n**Triggered By:** ${{ github.actor }}\n**Reason:** ${{ github.event.inputs.reason }}"
+                            }
+                        }
+                    ]
+                }
+              }' \
+          $FEISHU_WEBHOOK_URL

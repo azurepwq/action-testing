@@ -1,0 +1,39 @@
+name: Sync Dev Branch
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request: 
+    types:
+      - closed
+
+  # 添加手动触发事件
+  workflow_dispatch:
+
+jobs:
+  sync-dev:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Gives write access to repository contents
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 可选的失败测试步骤
+      - name: Simulate failure (manual trigger)
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          echo "Simulating failure..."
+          exit 1
+      - name: Update dev branch
+        id: sync
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git checkout dev
+          git merge main
+          git push origin dev
