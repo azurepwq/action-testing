@@ -1,0 +1,48 @@
+name: Notify Feishu on Pull Request Merged
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+  workflow_run:
+    workflows: ["Notify Feishu on Pull Request Merged"]
+    types:
+      - completed
+
+jobs:
+  notify-feishu:
+    if: ${{ github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Notify Feishu on Pull Request Merged
+        uses: ./actions/feishu-notify.yml
+        with:
+          webhook_url: ${{ secrets.FEISHU_WEBHOOK_URL }}
+          title: "Pull Request Merged"
+          template: "green"
+          repository: ${{ github.repository }}
+          pull_request_number: ${{ github.event.pull_request.number }}
+          pull_request_title: ${{ github.event.pull_request.title }}
+          pull_request_url: ${{ github.event.pull_request.html_url }}
+          author: ${{ github.event.pull_request.user.login }}
+          merged_by: ${{ github.event.pull_request.merged_by.login }}
+
+  notify-failure:
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Notify Feishu on CI Failure
+        uses: ./actions/feishu-notify.yml
+        with:
+          webhook_url: ${{ secrets.FEISHU_WEBHOOK_URL }}
+          title: "CI Failure"
+          template: "red"
+          content: |
+            **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})
+            **Workflow:** [${{ github.workflow }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            **Status:** Failed
+            **Triggered By:** ${{ github.actor }}
